@@ -16,12 +16,25 @@ duration = 1.0   # in seconds, may be float
 #gen a saw wave
 def genSaw(freq, detune):
     samples = np.zeros(fs)
-    dist = 1 / (fs / freq)
+    dist = 2 / (fs / freq)
+    samples[0] = -1.0
     for a in range(1, fs):
         if samples[a - 1] >= 1.0:
-            samples[a] = 0.0
+            samples[a] = -1.0
         else:
             samples[a] = samples[a - 1] + dist
+    # print(samples[:120])
+    return samples.astype(np.float32)
+
+def genRevSaw(freq, detune):
+    samples = np.zeros(fs)
+    dist = 2 / (fs / freq)
+    samples[0] = 1.0
+    for a in range(1, fs):
+        if samples[a - 1] <= -1.0:
+            samples[a] = 1.0
+        else:
+            samples[a] = samples[a - 1] - dist
     # print(samples[:120])
     return samples.astype(np.float32)
 
@@ -37,13 +50,14 @@ def addWaves(waves):
     return output
 
 def addSub(freq):
-    return (np.sin(2 * np.pi * np.arange(fs * duration) * freq / fs)).astype(np.float32)
+    return (np.sin(2 * np.pi * np.arange(fs) * freq / fs)).astype(np.float32)
 
 testWaves = []
-testWaves.append(genSaw(notes.getFreq("E","4"),0))
-testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
-testWaves.append(genSaw(notes.getFreq("B","4"),0))
-#testWaves.append(addSub(164.81))
+testWaves.append(genRevSaw(notes.getFreq("E","4"),0))
+# testWaves.append(genSaw(notes.getFreq("E","4"),0))
+# testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
+# testWaves.append(genSaw(notes.getFreq("B","4"),0))
+# testWaves.append(addSub(41.20))
 
 samples = addWaves(testWaves)
 #samples = testWaves[0].astype(np.float32)
