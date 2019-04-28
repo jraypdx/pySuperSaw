@@ -36,16 +36,21 @@ def addWaves(waves):
         o /= num
     return output
 
+def addSub(freq):
+    return (np.sin(2 * np.pi * np.arange(fs * duration) * freq / fs)).astype(np.float32)
+
 testWaves = []
 testWaves.append(genSaw(notes.getFreq("E","4"),0))
 testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
 testWaves.append(genSaw(notes.getFreq("B","4"),0))
+#testWaves.append(addSub(164.81))
 
 samples = addWaves(testWaves)
 #samples = testWaves[0].astype(np.float32)
-print (samples[:120])
-plt.scatter(range(0,2000), samples[:2000])
-plt.show()
+
+# print (samples[:120])
+# plt.scatter(range(0,2000), samples[:2000])
+# plt.show()
 
 stream = p.open(format=pyaudio.paFloat32,
                     channels=1,
