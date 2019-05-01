@@ -47,19 +47,38 @@ def addWaves(waves):
             output[b] = (output[b] + a[b])
     for o in output:
         o /= num
-    return output
+    return output.tobytes()
+
+def panTest(waves):
+    count = 0
+    left = np.zeros(fs).astype(np.float32)
+    right = np.zeros(fs).astype(np.float32)
+    output = np.zeros(fs*2).astype(np.float32)
+    for a in range(0,fs):
+        left[a] = (waves[0][a] + (0.25 * waves[1][a])) / 2
+        right[a] = (waves[0][a] + (1.5 * waves[1][a])) / 2
+    for b in range(0,fs*2):
+        if b < 48000:
+            if (b % 2 == 0):
+                output[b] = left[count]
+            else:
+                output[b] = right[count]
+            count += 1
+    print (output[:40])
+    return output.tobytes()
 
 def addSub(freq):
     return (np.sin(2 * np.pi * np.arange(fs) * freq / fs)).astype(np.float32)
 
 testWaves = []
-testWaves.append(genRevSaw(notes.getFreq("E","4"),0))
+testWaves.append(genSaw(notes.getFreq("E","4"),0))
 # testWaves.append(genSaw(notes.getFreq("E","4"),0))
 # testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
-# testWaves.append(genSaw(notes.getFreq("B","4"),0))
+testWaves.append(genSaw(notes.getFreq("B","4"),0))
 # testWaves.append(addSub(41.20))
 
-samples = addWaves(testWaves)
+# samples = addWaves(testWaves)
+samples = panTest(testWaves)
 #samples = testWaves[0].astype(np.float32)
 
 # print (samples[:120])
@@ -67,7 +86,7 @@ samples = addWaves(testWaves)
 # plt.show()
 
 stream = p.open(format=pyaudio.paFloat32,
-                    channels=1,
+                    channels=2,
                     rate=fs,
                     output=True)
 stream.write(samples)
