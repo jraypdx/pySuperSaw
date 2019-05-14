@@ -1,10 +1,9 @@
-#some of this code from a stack overflow answer: https://stackoverflow.com/questions/8299303/generating-sine-wave-sound-in-python
-
 import pyaudio
 import numpy as np
-# from appJar import gui
+from appJar import gui
 import matplotlib.pyplot as plt
 import notes
+import ssgui
 
 p = pyaudio.PyAudio()
 
@@ -17,6 +16,8 @@ duration = 1.0   # in seconds, may be float
 def genSaw(freq, detune):
     samples = np.zeros(fs)
     dist = 2 / (fs / freq)
+    if detune:
+        dist += (dist/1000 * detune)
     samples[0] = -1.0
     for a in range(1, fs):
         if samples[a - 1] >= 1.0:
@@ -64,36 +65,44 @@ def panTest(waves):
             else:
                 output[b] = right[count]
             count += 1
-    print (output[:40])
+    # print (output[:40])
     return output.tobytes()
 
 def addSub(freq):
     return (np.sin(2 * np.pi * np.arange(fs) * freq / fs)).astype(np.float32)
 
-testWaves = []
-testWaves.append(genSaw(notes.getFreq("E","4"),0))
-# testWaves.append(genSaw(notes.getFreq("E","4"),0))
-# testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
-testWaves.append(genSaw(notes.getFreq("B","4"),0))
-# testWaves.append(addSub(41.20))
+def makeWaves(inList):
+    testWaves = []
+    testWaves.append(genSaw(notes.getFreq("E","4"),5))
+    testWaves.append(genSaw(notes.getFreq("E","4"),-5))
+    # testWaves.append(genSaw(notes.getFreq("G#/Ab","4"),0))
+    testWaves.append(genSaw(notes.getFreq("B","4"),3))
+    # testWaves.append(addSub(41.20))
 
-# samples = addWaves(testWaves)
-samples = panTest(testWaves)
-#samples = testWaves[0].astype(np.float32)
+    # samples = addWaves(testWaves)
+    samples = panTest(testWaves)
+    return samples
 
-# print (samples[:120])
-# plt.scatter(range(0,2000), samples[:2000])
-# plt.show()
+def play(samples):
+    stream = p.open(format=pyaudio.paFloat32,
+                        channels=2,
+                        rate=fs,
+                        output=True)
+    stream.write(samples)
+    stream.stop_stream()
+    stream.close()
 
-stream = p.open(format=pyaudio.paFloat32,
-                    channels=2,
-                    rate=fs,
-                    output=True)
-stream.write(samples)
-stream.stop_stream()
-stream.close()
+def press(button):
+    if button == "Cancel":
+        app.stop()
+    else:
+        samples = makeWaves(0)
+        play(samples)
 
+app = gui(showIcon=False)
+ssgui.buildgui(app)
 
+app.go()
 
 # def press(button):
 #     wave = app.getRadioButton("wave")
