@@ -1,3 +1,27 @@
+def getFreq2(note, octave, cents): #calculates frequency based on note and detune (cents, -100 to 100
+    if cents < -100 or cents > 100:
+        cents = 0
+    tnum = 2 ** (1/12)
+    baseNote = 440 #A4
+    addition = (octave - 4) * 12
+    noteSteps = {
+        "C": -9,
+        "C#": -8, "Db": -8, "C#/Db": -8,
+        "D": -7,
+        "D#": -6, "Eb": -6, "D#/Eb": -6,
+        "E": -5,
+        "F": -4,
+        "B#": -3, "Gb": -3, "B#/Gb": -3,
+        "G": -2,
+        "G#": -1, "Ab": -1, "G#/Ab": -1,
+        "A": 0,
+        "A#": 1, "Bb": 1, "A#/Bb": 1,
+        "B": 2
+    }
+    powr = noteSteps.get(note) + addition
+    note = baseNote * (tnum ** powr)
+    return note * 2 ** (cents/1200)
+
 def getFreq(note, octave):
     FreqTable = {
         # 3
