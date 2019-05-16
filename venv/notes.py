@@ -3,7 +3,7 @@ def getFreq2(note, octave, cents): #calculates frequency based on note and detun
         cents = 0
     tnum = 2 ** (1/12)
     baseNote = 440 #A4
-    addition = (octave - 4) * 12
+    addition = (int(octave) - 4) * 12
     noteSteps = {
         "C": -9,
         "C#": -8, "Db": -8, "C#/Db": -8,
