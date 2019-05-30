@@ -1,3 +1,7 @@
+# todo:
+#  - add a sub bass?
+#  - add reverb?
+
 import pyaudio
 import numpy as np
 from appJar import gui
@@ -23,7 +27,7 @@ def play(samples):
 
 
 def press(button):
-    if button == "Cancel":
+    if button == "Close":
         app.stop()
     else:
         waves = [] #format: Note, Octave, Voices, Detune
@@ -42,6 +46,7 @@ def press(button):
         else:
             print("Please select at least one wave to use")
 
+#I probably should have used a loop to make the gui...
 app = gui(showIcon=False)
 app.setTitle("pySuperSaw")
 app.startFrame("frame 1", row=0, column=0)
@@ -52,7 +57,7 @@ app.addLabelOptionBox("Note 1", ["C", "C#/Db", "D",
 app.addLabelOptionBox("Octave 1", ["2", "3", "4", "5", "6"])
 # app.addScale("Detune 1", row=3, column=1)
 app.addLabelOptionBox("Voices 1", ["1", "2", "3", "4"])
-app.addLabel("Detune 1 (-100 - 100):")
+app.addLabel("Detune 1 (-100 to 100):")
 app.addEntry("Detune 1")
 app.stopFrame()
 
@@ -63,7 +68,7 @@ app.addLabelOptionBox("Note 2", ["C", "C#/Db", "D",
                                  "G#/Ab", "A", "A#/Bb", "B"])
 app.addLabelOptionBox("Octave 2", ["2", "3", "4", "5", "6"])
 app.addLabelOptionBox("Voices 2", ["1", "2", "3", "4"])
-app.addLabel("Detune 2 (-100 - 100):")
+app.addLabel("Detune 2 (-100 to 100):")
 app.addEntry("Detune 2")
 app.stopFrame()
 
@@ -75,7 +80,7 @@ app.addLabelOptionBox("Note 3", ["C", "C#/Db", "D",
                                  "G#/Ab", "A", "A#/Bb", "B"])
 app.addLabelOptionBox("Octave 3", ["2", "3", "4", "5", "6"])
 app.addLabelOptionBox("Voices 3", ["1", "2", "3", "4"])
-app.addLabel("Detune 3 (-100 - 100):")
+app.addLabel("Detune 3 (-100 to 100):")
 app.addEntry("Detune 3")
 app.stopFrame()
 
@@ -87,12 +92,12 @@ app.addLabelOptionBox("Note 4", ["C", "C#/Db", "D",
                                  "G#/Ab", "A", "A#/Bb", "B"])
 app.addLabelOptionBox("Octave 4", ["2", "3", "4", "5", "6"])
 app.addLabelOptionBox("Voices 4", ["1", "2", "3", "4"])
-app.addLabel("Detune 4 (-100 - 100):")
+app.addLabel("Detune 4 (-100 to 100):")
 app.addEntry("Detune 4")
 app.stopFrame()
 
 app.addLabel("  ")
-app.addButtons(["Play", "Cancel"], press)
+app.addButtons(["Play", "Close"], press)
 
 app.go()
 p.terminate()
