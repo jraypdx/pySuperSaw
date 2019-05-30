@@ -26,56 +26,56 @@ def genSaw(freq):
     return samples.astype(np.float32)
 
 #gen a stereo saw wave (in progress)
-def genStereoSaw(freq, voices):
-    offset = 120 #how delayed one side is from the other (0 = mono, 100-2000 spread)
+def genStereoSaw(freq, voices, vol):
+    volume = vol / 100
+    offset = 96 #how delayed one side is from the other (0 = mono, 100-2000 spread) (48 = 1ms)
     if voices <= 0 or voices > 4: #currently supporting 1-4 voices
         voices = 1
     left = np.zeros(fs).astype(np.float32)
     right = np.zeros(fs).astype(np.float32)
     output = np.zeros(fs * 2).astype(np.float32)
-    dist = 2 / (fs / freq)
-    left[0] = -1.0
+    dist = (2 / (fs / freq)) * volume
+    left[0] = -volume
     for a in range(1, fs):
-        if left[a - 1] >= 1.0:
-            left[a] = -1.0
+        if left[a - 1] >= volume:
+            left[a] = -volume
         else:
             left[a] = left[a - 1] + dist
     if (voices == 1):
         right = np.copy(left)
     elif (voices == 2):
-        right[offset] = -1.0
+        right[offset] = -volume
         for a in range(offset, fs):
-            if right[a - 1] >= 1.0:
-                right[a] = -1.0
+            if right[a - 1] >= volume:
+                right[a] = -volume
             else:
                 right[a] = right[a-1] + dist
     elif (voices == 3 or voices == 4):
-        right[offset] = -1.0
+        right[offset] = -volume
         for a in range(offset, fs):
-            if right[a - 1] >= 1.0:
-                right[a] = -1.0
+            if right[a - 1] >= volume:
+                right[a] = -volume
             else:
                 right[a] = right[a - 1] + dist
         offset = int(offset * 2.25)
         temp = np.zeros(fs).astype(np.float32)
-        temp[offset] = -1.0
+        temp[offset] = -volume
         for b in range(offset, fs):
-            if temp[b - 1] >= 1.0:
-                temp[b] = -1.0
+            if temp[b - 1] >= volume:
+                temp[b] = -volume
             else:
                 temp[b] = temp[b - 1] + dist
         left = addStereoWaves([left, temp])
     if (voices == 4):
         offset = int(offset * 1.75)
         temp = np.zeros(fs).astype(np.float32)
-        temp[offset] = -1.0
+        temp[offset] = -volume
         for b in range(offset, fs):
-            if temp[b - 1] >= 1.0:
-                temp[b] = -1.0
+            if temp[b - 1] >= volume:
+                temp[b] = -volume
             else:
                 temp[b] = temp[b - 1] + dist
         right = addStereoWaves([right, temp])
-
 
     #combine the left and right channel
     count = 0
@@ -164,8 +164,8 @@ def makeWaves(inList):
 
 def makeStereoWaves(inList):
     testWaves = []
-    for a in inList: #inList format: [note, octave, voices, detune]
-        testWaves.append(genStereoSaw(notes.getFreq2(a[0], a[1], int(a[3])),int(a[2])))
+    for a in inList: #inList format: [note, octave, voices, detune, volume]
+        testWaves.append(genStereoSaw(notes.getFreq2(a[0], a[1], int(a[3])),int(a[2]), int(a[4])))
     # testWaves.append(genStereoSaw(notes.getFreq2("E","3", 8),1))
     # testWaves.append(genStereoSaw(notes.getFreq2("E","3", -8),1))
     # testWaves.append(genStereoSaw(notes.getFreq2("E", "4", 12), 1))

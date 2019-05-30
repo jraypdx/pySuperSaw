@@ -32,15 +32,16 @@ def press(button):
     else:
         waves = [] #format: Note, Octave, Voices, Detune
         for a in range (1,4+1):
-            if (app.getCheckBox("Use " + str(a))):
+            if (app.getScale("Volume " + str(a))):
                 note = app.getOptionBox("Note " + str(a))
                 octave = app.getOptionBox("Octave " + str(a))
                 voices = app.getOptionBox("Voices " + str(a))
                 detune = app.getEntry("Detune " + str(a))
+                vol = app.getScale("Volume " + str(a))
                 if detune == '':
                     detune = 0
                 # print (str(a) + " det: " + str(detune))
-                waves.append([note, octave, voices, detune])
+                waves.append([note, octave, voices, detune, vol])
         if waves:
             play(saws.makeStereoWaves(waves))
         else:
@@ -50,7 +51,9 @@ def press(button):
 app = gui(showIcon=False)
 app.setTitle("pySuperSaw")
 app.startFrame("frame 1", row=0, column=0)
-app.addCheckBox("Use 1")
+#app.addCheckBox("Use 1")
+app.addLabelScale("Volume 1")
+app.showScaleValue("Volume 1")
 app.addLabelOptionBox("Note 1", ["C", "C#/Db", "D",
                                  "D#/Eb", "E", "F", "F#/Gb", "G",
                                  "G#/Ab", "A", "A#/Bb", "B"])
@@ -62,7 +65,9 @@ app.addEntry("Detune 1")
 app.stopFrame()
 
 app.startFrame("frame 2", row=0, column=1)
-app.addCheckBox("Use 2")
+# app.addCheckBox("Use 2")
+app.addLabelScale("Volume 2")
+app.showScaleValue("Volume 2")
 app.addLabelOptionBox("Note 2", ["C", "C#/Db", "D",
                                  "D#/Eb", "E", "F", "F#/Gb", "G",
                                  "G#/Ab", "A", "A#/Bb", "B"])
@@ -74,7 +79,9 @@ app.stopFrame()
 
 app.startFrame("frame 3", row=1, column=0)
 app.addLabel("")
-app.addCheckBox("Use 3")
+# app.addCheckBox("Use 3")
+app.addLabelScale("Volume 3")
+app.showScaleValue("Volume 3")
 app.addLabelOptionBox("Note 3", ["C", "C#/Db", "D",
                                  "D#/Eb", "E", "F", "F#/Gb", "G",
                                  "G#/Ab", "A", "A#/Bb", "B"])
@@ -86,7 +93,9 @@ app.stopFrame()
 
 app.startFrame("frame 4", row=1, column=1)
 app.addLabel(" ")
-app.addCheckBox("Use 4")
+# app.addCheckBox("Use 4")
+app.addLabelScale("Volume 4")
+app.showScaleValue("Volume 4")
 app.addLabelOptionBox("Note 4", ["C", "C#/Db", "D",
                                  "D#/Eb", "E", "F", "F#/Gb", "G",
                                  "G#/Ab", "A", "A#/Bb", "B"])
